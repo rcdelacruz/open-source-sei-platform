@@ -1,0 +1,70 @@
+_format_version: "3.0"
+
+services:
+- name: sei-api-service
+  url: http://api-service:8080
+  plugins:
+  - name: cors
+    config:
+      origins:
+      - "http://localhost:3002"
+      - "https://sei-platform.com"
+      methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+      headers:
+      - Accept
+      - Accept-Version
+      - Content-Length
+      - Content-MD5
+      - Content-Type
+      - Date
+      - X-Auth-Token
+      - Authorization
+      exposed_headers:
+      - X-Auth-Token
+      credentials: true
+      max_age: 3600
+  - name: rate-limiting
+    config:
+      minute: 100
+      hour: 1000
+      policy: local
+  routes:
+  - name: api-v1
+    paths:
+    - "/api/v1"
+    strip_path: false
+
+- name: sei-websocket
+  url: http://api-service:8080
+  routes:
+  - name: websocket
+    paths:
+    - "/ws"
+    strip_path: false
+    protocols:
+    - http
+    - https
+    - ws
+    - wss
+
+- name: sei-metrics
+  url: http://api-service:8080
+  routes:
+  - name: metrics
+    paths:
+    - "/metrics"
+    strip_path: false
+
+plugins:
+- name: prometheus
+  config:
+    per_consumer: false
+    status_code_metrics: true
+    latency_metrics: true
+    bandwidth_metrics: true
+    upstream_health_metrics: true

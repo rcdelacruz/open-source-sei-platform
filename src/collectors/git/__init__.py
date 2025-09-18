@@ -1,0 +1,1 @@
+"""Git data collector package."""

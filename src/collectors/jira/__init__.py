@@ -1,0 +1,1 @@
+"""Jira data collector package."""
