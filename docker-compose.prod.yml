@@ -1,0 +1,360 @@
+version: '3.8'
+
+# Production Docker Compose configuration
+# Use this for production deployments with optimized settings
+
+services:
+  # Production Databases
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: sei-timescaledb-prod
+    environment:
+      POSTGRES_DB: ${TIMESCALE_DB:-sei_platform}
+      POSTGRES_USER: ${TIMESCALE_USER:-sei_user}
+      POSTGRES_PASSWORD: ${TIMESCALE_PASSWORD}
+      TIMESCALEDB_TELEMETRY: off
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_prod_data:/var/lib/postgresql/data
+      - ./scripts/init-timescaledb.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    command: >
+      postgres
+      -c shared_preload_libraries=timescaledb
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+    networks:
+      - sei-prod-network
+
+  postgresql:
+    image: postgres:14-alpine
+    container_name: sei-postgresql-prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sei_metadata}
+      POSTGRES_USER: ${POSTGRES_USER:-sei_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./scripts/init-postgresql.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    command: >
+      postgres
+      -c max_connections=100
+      -c shared_buffers=128MB
+      -c effective_cache_size=512MB
+    networks:
+      - sei-prod-network
+
+  # Production Cache and Message Queue
+  redis:
+    image: redis:7-alpine
+    container_name: sei-redis-prod
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_prod_data:/data
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: sei-zookeeper-prod
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_prod_data:/var/lib/zookeeper/data
+      - zookeeper_prod_logs:/var/lib/zookeeper/log
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: sei-kafka-prod
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_prod_data:/var/lib/kafka/data
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  # Production Analytics
+  metabase:
+    image: metabase/metabase:latest
+    container_name: sei-metabase-prod
+    depends_on:
+      - postgresql
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${POSTGRES_DB:-sei_metadata}
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${POSTGRES_USER:-sei_user}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      MB_DB_HOST: postgresql
+      JAVA_OPTS: -Xmx2g
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase_prod_data:/metabase-data
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  # Production Application Services
+  git-collector:
+    build:
+      context: ./src/collectors/git
+      dockerfile: Dockerfile.prod
+    image: sei-git-collector:${VERSION:-latest}
+    container_name: sei-git-collector-prod
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: production
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITLAB_TOKEN: ${GITLAB_TOKEN}
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    networks:
+      - sei-prod-network
+
+  jira-collector:
+    build:
+      context: ./src/collectors/jira
+      dockerfile: Dockerfile.prod
+    image: sei-jira-collector:${VERSION:-latest}
+    container_name: sei-jira-collector-prod
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: production
+      JIRA_API_TOKEN: ${JIRA_API_TOKEN}
+      JIRA_BASE_URL: ${JIRA_BASE_URL}
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    networks:
+      - sei-prod-network
+
+  data-processor:
+    build:
+      context: ./src/processors
+      dockerfile: Dockerfile.prod
+    image: sei-data-processor:${VERSION:-latest}
+    container_name: sei-data-processor-prod
+    depends_on:
+      - kafka
+      - timescaledb
+      - redis
+    environment:
+      KAFKA_BROKERS: kafka:9092
+      TIMESCALE_URL: postgresql://${TIMESCALE_USER:-sei_user}:${TIMESCALE_PASSWORD}@timescaledb:5432/${TIMESCALE_DB:-sei_platform}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: production
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - sei-prod-network
+
+  api-service:
+    build:
+      context: ./src/apis
+      dockerfile: Dockerfile.prod
+    image: sei-api-service:${VERSION:-latest}
+    container_name: sei-api-service-prod
+    depends_on:
+      - timescaledb
+      - postgresql
+      - redis
+    environment:
+      TIMESCALE_URL: postgresql://${TIMESCALE_USER:-sei_user}:${TIMESCALE_PASSWORD}@timescaledb:5432/${TIMESCALE_DB:-sei_platform}
+      POSTGRES_URL: postgresql://${POSTGRES_USER:-sei_user}:${POSTGRES_PASSWORD}@postgresql:5432/${POSTGRES_DB:-sei_metadata}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      ENVIRONMENT: production
+      JWT_SECRET: ${JWT_SECRET}
+      API_RATE_LIMIT: ${API_RATE_LIMIT:-1000}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - sei-prod-network
+
+  # Production Frontend
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile.prod
+    image: sei-frontend:${VERSION:-latest}
+    container_name: sei-frontend-prod
+    depends_on:
+      - api-service
+    environment:
+      REACT_APP_API_URL: ${FRONTEND_API_URL:-http://localhost:8080}
+      REACT_APP_WS_URL: ${FRONTEND_WS_URL:-ws://localhost:8080/ws}
+      REACT_APP_ENVIRONMENT: production
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  # Production Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sei-prometheus-prod
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.prod.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_prod_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sei-grafana-prod
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3001}
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_prod_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+  # Production Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: sei-nginx-prod
+    depends_on:
+      - frontend
+      - api-service
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+      - nginx_prod_logs:/var/log/nginx
+    restart: unless-stopped
+    networks:
+      - sei-prod-network
+
+volumes:
+  timescale_prod_data:
+  postgres_prod_data:
+  redis_prod_data:
+  kafka_prod_data:
+  zookeeper_prod_data:
+  zookeeper_prod_logs:
+  metabase_prod_data:
+  prometheus_prod_data:
+  grafana_prod_data:
+  nginx_prod_logs:
+
+networks:
+  sei-prod-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
