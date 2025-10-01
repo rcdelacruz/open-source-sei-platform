@@ -175,7 +175,7 @@ Instead, email security@sei-platform.org with:
 ## Community Guidelines
 
 ### Code of Conduct
-We are committed to providing a welcoming and inspiring community for all. Please read our [Code of Conduct](CODE_OF_CONDUCT.md).
+We are committed to providing a welcoming and inspiring community for all.
 
 ### Communication Channels
 - **GitHub Issues** - Bug reports and feature requests
