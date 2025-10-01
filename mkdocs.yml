@@ -1,0 +1,150 @@
+site_name: SEI Platform Documentation
+site_description: Open Source Software Engineering Intelligence Platform
+site_author: SEI Platform Team
+site_url: https://rcdelacruz.github.io/open-source-sei-platform
+
+repo_name: rcdelacruz/open-source-sei-platform
+repo_url: https://github.com/rcdelacruz/open-source-sei-platform
+edit_uri: edit/master/docs/
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  language: en
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Work Sans
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - javascripts/mermaid-init.js
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: rcdelacruz
+      repo: open-source-sei-platform
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Overview: getting-started/overview.md
+    - Quick Start: getting-started/quick-start.md
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+  - Development:
+    - Environment Setup: development/environment-setup.md
+    - Project Structure: development/project-structure.md
+    - Running Services: development/running-services.md
+    - Testing: development/testing.md
+    - Code Quality: development/code-quality.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - System Design: architecture/system-design.md
+    - Data Models: architecture/data-models.md
+    - API Design: architecture/api-design.md
+    - Database Schema: architecture/database-schema.md
+    - Security: architecture/security.md
+  - API Reference:
+    - Introduction: api/introduction.md
+    - Authentication: api/authentication.md
+    - Organizations: api/organizations.md
+    - Teams: api/teams.md
+    - Repositories: api/repositories.md
+    - Developers: api/developers.md
+    - Analytics: api/analytics.md
+  - Services:
+    - API Service: services/api-service.md
+    - Git Collector: services/git-collector.md
+    - Jira Collector: services/jira-collector.md
+    - Data Processor: services/data-processor.md
+  - Deployment:
+    - Docker Compose: deployment/docker-compose.md
+    - Kubernetes: deployment/kubernetes.md
+    - Production Setup: deployment/production.md
+    - Monitoring: deployment/monitoring.md
+  - Contributing:
+    - Guidelines: contributing/guidelines.md
+    - Code Style: contributing/code-style.md
+    - Pull Requests: contributing/pull-requests.md
+    - Roadmap: contributing/roadmap.md
+  - Progress:
+    - Current Status: progress/current-status.md
+    - Completed Sprints: progress/completed-sprints.md
+    - Upcoming Work: progress/upcoming-work.md
+
+plugins:
+  - search
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/rcdelacruz/open-source-sei-platform
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY

@@ -1,0 +1,33 @@
+# Documentation Makefile
+
+.PHONY: docs-install docs-serve docs-build docs-deploy docs-clean
+
+docs-install: ## Install documentation dependencies
+	@echo "Installing MkDocs and dependencies..."
+	pip3 install --user -r requirements-docs.txt
+	@echo "Documentation dependencies installed!"
+
+docs-serve: ## Serve documentation locally
+	@echo "Starting MkDocs development server..."
+	@echo "Documentation will be available at: http://127.0.0.1:8000"
+	mkdocs serve
+
+docs-build: ## Build documentation
+	@echo "Building documentation..."
+	mkdocs build
+	@echo "Documentation built in site/ directory"
+
+docs-deploy: ## Deploy documentation to GitHub Pages
+	@echo "Deploying documentation to GitHub Pages..."
+	mkdocs gh-deploy --force
+	@echo "Documentation deployed!"
+
+docs-clean: ## Clean built documentation
+	@echo "Cleaning documentation build..."
+	rm -rf site/
+	@echo "Documentation cleaned!"
+
+docs-help: ## Show documentation help
+	@echo "SEI Platform Documentation Commands:"
+	@echo ""
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'

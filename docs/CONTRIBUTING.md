@@ -88,6 +88,7 @@ make test-e2e
 
 ### Bug Reports
 Use the bug report template and include:
+
 - **Steps to reproduce**
 - **Expected behavior**
 - **Actual behavior**
@@ -96,6 +97,7 @@ Use the bug report template and include:
 
 ### Feature Requests
 Use the feature request template and include:
+
 - **Problem description**
 - **Proposed solution**
 - **Alternatives considered**
@@ -127,6 +129,7 @@ Use the feature request template and include:
 **DO NOT** open public issues for security vulnerabilities.
 
 Instead, email security@sei-platform.org with:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact
@@ -184,6 +187,7 @@ We are committed to providing a welcoming and inspiring community for all. Pleas
 
 ### Versioning
 We use [Semantic Versioning](http://semver.org/):
+
 - **MAJOR** - Breaking changes
 - **MINOR** - New features (backward compatible)
 - **PATCH** - Bug fixes (backward compatible)
@@ -210,6 +214,7 @@ We use [Semantic Versioning](http://semver.org/):
 ## Recognition
 
 Contributors will be recognized in:
+
 - CONTRIBUTORS.md file
 - Release notes
 - Annual contributor spotlight
