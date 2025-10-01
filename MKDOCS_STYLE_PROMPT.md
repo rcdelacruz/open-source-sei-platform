@@ -14,7 +14,7 @@ Create a MkDocs documentation site with the following exact specifications:
 ### Typography
 - **Primary font**: Work Sans (300, 400, 500, 600, 700 weights)
 - **Code font**: JetBrains Mono (400, 500, 700 weights)
-- **Base font size**: 0.9rem
+- **Base font size**: 0.8316rem (optimized for readability)
 - **Line height**: 1.5
 - Font smoothing enabled for crisp rendering
 
@@ -40,10 +40,12 @@ Create a MkDocs documentation site with the following exact specifications:
 #### Layout
 - Fixed position on left
 - Width: 15rem
-- Starts immediately below header (top: 3.6rem, no padding-top)
+- Starts immediately below header (top: 3.6rem)
+- Inner padding: 0.5rem 0 (top and bottom spacing)
 - Background must fill **full width** with no gaps on right side
 - Height: calc(100vh - 3.6rem)
 - z-index: 1 (below footer if present)
+- overflow: hidden (for stability)
 
 #### Colors
 - **Light mode**:
@@ -54,7 +56,7 @@ Create a MkDocs documentation site with the following exact specifications:
   - Border right: 1px solid #333
 
 #### Section Headers (Top Level Items)
-- Font size: 0.75rem
+- Font size: 0.693rem
 - Font weight: 600
 - Padding: 0.55rem 1rem
 - Text transform: UPPERCASE
@@ -62,9 +64,11 @@ Create a MkDocs documentation site with the following exact specifications:
 - Background: #f5f5f5 (light) / #252525 (dark)
 - Color: #666 (light) / #999 (dark)
 - Border bottom: 1px solid between sections
+- display: block, width: 100%
+- Transition: background-color 0.2s ease, color 0.2s ease (not "all" for stability)
 
 #### Nested Items (Sub-pages)
-- Font size: 0.8rem
+- Font size: 0.7392rem
 - Font weight: 400
 - Padding: 0.45rem 1rem 0.45rem 1.75rem (left indented)
 - Border left: 3px solid transparent (shows accent color on hover/active)
@@ -72,12 +76,22 @@ Create a MkDocs documentation site with the following exact specifications:
 - Color: #555 (light) / #aaa (dark)
 - Hover: #f8f8f8 background with #3498DB border
 - Active: #e8f4fd background with #3498DB border and text color
+- display: block, width: 100%
+- Text overflow: ellipsis with overflow: hidden and white-space: nowrap
+- Transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease
 
 #### Scrollbar
 - Always visible (overflow-y: scroll) to prevent layout shifts
 - Width: 6px
 - Thin style with custom colors
 - Color: #ccc (light) / #444 (dark)
+
+#### Navigation Elements
+- **Navigation title/logo**: Hidden (display: none)
+- **Expand/collapse icons**: Hidden (display: none) for cleaner appearance
+- **Home link**: Hidden from sidebar navigation (only root path)
+- **Duplicate links**: Hidden when both label and anchor exist (prevents double items)
+- **All nav items**: margin: 0, padding: 0, display: block for consistent layout
 
 ### Right TOC Sidebar
 
@@ -86,17 +100,18 @@ Create a MkDocs documentation site with the following exact specifications:
 - Width: 12rem
 - Starts immediately below header (top: 3.6rem, no padding-top)
 - Height: calc(100vh - 3.6rem)
+- overflow: hidden (for stability)
 
 #### Spacing (Match Left Nav)
 - Title padding: 0.55rem 1rem
 - Link padding: 0.45rem 1rem
-- Font size: 0.8rem
+- Font size: 0.7392rem
 - Font weight: 400
 - Border left: 3px solid transparent
 - Color: #555 (light) / #aaa (dark)
 
 #### Title
-- Font size: 0.75rem
+- Font size: 0.693rem
 - Font weight: 600
 - Text transform: UPPERCASE
 - Letter spacing: 0.08em
@@ -116,11 +131,12 @@ Create a MkDocs documentation site with the following exact specifications:
 - Min-height: 100vh
 
 #### Typography Spacing (Minimal)
-- **H1**: 1.8rem, margin-bottom 0.5rem, border-bottom 1px
-- **H2**: 1.4rem, margin-top 1rem, margin-bottom 0.4rem
-- **H3**: 1.15rem, margin-top 0.75rem, margin-bottom 0.3rem
-- **H4**: 1rem, margin-top 0.5rem, margin-bottom 0.3rem
+- **H1**: 1.6632rem, margin-bottom 0.5rem, border-bottom 1px
+- **H2**: 1.2936rem, margin-top 1rem, margin-bottom 0.4rem
+- **H3**: 1.0626rem, margin-top 0.75rem, margin-bottom 0.3rem
+- **H4**: 0.924rem, margin-top 0.5rem, margin-bottom 0.3rem
 - **Paragraphs**: margin-bottom 0.5rem
+- **Inline code**: font-size 0.79464em
 - **Code blocks**: padding 0.5rem, margin 0.5rem 0
 - **Lists**: margin 0.4rem 0, list items 0.15rem 0
 - **Tables**: margin 0.5rem 0
@@ -128,7 +144,7 @@ Create a MkDocs documentation site with the following exact specifications:
 - **Horizontal rules**: margin 1rem 0
 
 #### Tables
-- Font size: 0.85rem
+- Font size: 0.7854rem
 - Border: 1px solid rgba(0, 0, 0, 0.08)
 - Header background: rgba(0, 0, 0, 0.04)
 - Header padding: 0.6rem 0.75rem
@@ -140,6 +156,7 @@ Create a MkDocs documentation site with the following exact specifications:
 - Padding: 0.4rem 0.6rem
 - Margin: 0.5rem 0
 - No border radius
+- Title font-size: 0.7854rem
 - Title margin-bottom: 0.3rem
 
 ### Global Settings
@@ -308,14 +325,53 @@ html, body { overflow-y: scroll; }
 .md-header { width: 100%; left: 0; right: 0; }
 .md-footer { display: none; }
 
-/* Left nav full width background */
+/* Left nav full width background and stability */
+.md-sidebar--primary {
+  top: 3.6rem;
+  padding-top: 0;
+  overflow: hidden;
+  /* DO NOT use will-change: transform - causes layout instability */
+}
 .md-sidebar--primary .md-sidebar__scrollwrap { padding: 0; width: 100%; }
 .md-sidebar--primary .md-sidebar__inner { width: 100%; padding: 0.5rem 0; }
-.md-sidebar--primary .md-nav { width: 100%; padding: 0; }
+.md-sidebar--primary .md-nav { width: 100%; padding: 0; margin: 0; }
 
-/* Sidebars start below header */
-.md-sidebar--primary { top: 3.6rem; padding-top: 0; }
-.md-sidebar--secondary { top: 3.6rem; padding-top: 0; }
+/* Hide navigation elements for cleaner UI */
+.md-sidebar--primary .md-nav__title { display: none; }
+.md-sidebar--primary .md-nav__icon { display: none; }
+
+/* Hide the Home link in navigation (only the exact root path) */
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item:has(> a.md-nav__link[href$="/open-source-sei-platform/"]) {
+  display: none;
+}
+
+/* Prevent duplicate links (label + anchor) */
+.md-sidebar--primary .md-nav__item > input.md-nav__toggle + label.md-nav__link + a.md-nav__link {
+  display: none !important;
+}
+
+/* Navigation item stability */
+.md-sidebar--primary .md-nav__item {
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 100%;
+}
+
+/* Text overflow handling */
+.md-sidebar--primary .md-nav__link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Right sidebar stability */
+.md-sidebar--secondary {
+  top: 3.6rem;
+  padding-top: 0;
+  overflow: hidden;
+}
 
 /* Remove emoji */
 img.emoji { display: none !important; }
@@ -329,10 +385,12 @@ img.emoji { display: none !important; }
 1. **Consistency**: Left and right sidebars have matching spacing
 2. **Full width**: No gaps in sidebar backgrounds
 3. **Minimal spacing**: Tight, professional spacing throughout
-4. **No layout shifts**: Always-visible scrollbars prevent content jumping
-5. **Clean design**: No emojis, no excessive decoration
+4. **No layout shifts**: Always-visible scrollbars prevent content jumping, no will-change property
+5. **Clean design**: No emojis, no expand/collapse icons, no navigation logo
 6. **Professional colors**: Muted, professional color palette
 7. **Full viewport**: Header and footer span full width, sidebars fixed
+8. **Stability**: Use specific CSS transitions (not "all"), overflow: hidden on sidebars
+9. **No duplicates**: Hide duplicate navigation links when label and anchor both exist
 
 ### Markdown Formatting Best Practices
 
@@ -419,9 +477,15 @@ Edit the configuration file and set:
 - [ ] Footer is hidden with bottom padding on content
 - [ ] Scrollbars always visible (no layout shifts when scrolling)
 - [ ] Navigation tabs are hidden (sidebar navigation only)
-- [ ] Sidebars start immediately below header (no top padding)
+- [ ] Sidebars start immediately below header with 0.5rem top padding
 - [ ] Content has minimal, tight spacing
 - [ ] Light and dark modes both look professional
+- [ ] No expand/collapse icons visible in navigation
+- [ ] Navigation title/logo is hidden
+- [ ] Home link is hidden from sidebar navigation
+- [ ] No duplicate navigation items (only one "Production Setup", etc.)
+- [ ] Navigation doesn't move/shift when clicking items
+- [ ] Long navigation items show ellipsis (...) when truncated
 
 #### Markdown Formatting
 - [ ] All nested bullets under numbered lists use 4-space indentation

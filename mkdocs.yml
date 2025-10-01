@@ -130,7 +130,6 @@ nav:
     - Guidelines: contributing/guidelines.md
     - Code Style: contributing/code-style.md
     - Pull Requests: contributing/pull-requests.md
-    - Roadmap: contributing/roadmap.md
   - Progress:
     - Current Status: progress/current-status.md
     - Completed Sprints: progress/completed-sprints.md

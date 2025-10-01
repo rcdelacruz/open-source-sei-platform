@@ -270,7 +270,6 @@ For future sprint documentation:
 
 ## Resources
 
-- [Project Roadmap](../ROADMAP.md)
 - [Current Status](current-status.md)
 - [Upcoming Work](upcoming-work.md)
 - [Contributing Guidelines](../contributing/guidelines.md)

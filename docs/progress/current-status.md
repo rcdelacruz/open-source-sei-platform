@@ -154,7 +154,6 @@ Planned for Week 2 (Target: October 7, 2025):
 
 - [Source Code](https://github.com/rcdelacruz/open-source-sei-platform)
 - [API Documentation](http://localhost:8080/docs)
-- [Project Roadmap](roadmap.md)
 - [Contributing Guidelines](../contributing/guidelines.md)
 
 ## Timeline

@@ -324,7 +324,6 @@ This document outlines planned work for upcoming sprints and future phases of th
 
 ## Resources
 
-- [Project Roadmap](../ROADMAP.md)
 - [Current Status](current-status.md)
 - [Completed Sprints](completed-sprints.md)
 - [Contributing Guidelines](../contributing/guidelines.md)

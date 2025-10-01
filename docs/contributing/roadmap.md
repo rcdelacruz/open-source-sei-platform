@@ -4,7 +4,7 @@ This document explains how contributors can align their work with the project ro
 
 ## Understanding the Roadmap
 
-The SEI Platform follows a phased development approach over 12 months. The complete roadmap is available in [docs/ROADMAP.md](../ROADMAP.md).
+The SEI Platform follows a phased development approach over 12 months. The roadmap breaks down each phase into monthly and weekly deliverables.
 
 ### Current Phase
 
@@ -346,7 +346,6 @@ Significant contributors become roadmap co-authors.
 
 ## Questions?
 
-- Review full [roadmap](../ROADMAP.md)
 - Ask in [GitHub Discussions](https://github.com/rcdelacruz/open-source-sei-platform/discussions)
 - Join #roadmap channel in Discord
 - Email roadmap@sei-platform.org
