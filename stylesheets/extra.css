@@ -1,0 +1,636 @@
+/* Custom styles for SEI Platform Documentation */
+
+/* Import Work Sans font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* Professional color scheme */
+  --md-primary-fg-color: #2C3E50;
+  --md-accent-fg-color: #3498DB;
+
+  /* Tight, professional spacing */
+  --md-content-padding: 0.75rem 1rem;
+  --md-sidebar-width: 15rem;
+  --md-toc-width: 12rem;
+}
+
+/* Hide navigation tabs completely - we want sidebar navigation only */
+.md-tabs {
+  display: none !important;
+}
+
+/* Header spans full viewport */
+.md-header {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+.md-header__inner {
+  padding: 0 1rem;
+  max-width: none;
+}
+
+.md-header__topic {
+  margin-left: 0;
+}
+
+/* Force Work Sans as primary font */
+body {
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Code font */
+code, pre, .md-typeset code {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 400;
+}
+
+/* Full viewport - remove max-width constraint */
+.md-container {
+  max-width: none;
+}
+
+.md-main__inner {
+  max-width: none;
+  margin: 0;
+}
+
+/* Force scrollbar to always show to prevent layout shifts */
+html {
+  overflow-y: scroll;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+/* Left navigation pane - main menu */
+.md-sidebar--primary {
+  width: var(--md-sidebar-width);
+  left: 0;
+  position: fixed;
+  height: 100%;
+  top: 3.6rem;
+  padding-top: 0;
+  background-color: #fafafa;
+  border-right: 1px solid #e0e0e0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary {
+  background-color: #1e1e1e;
+  border-right: 1px solid #333;
+}
+
+.md-sidebar--primary .md-sidebar__scrollwrap {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: calc(100vh - 3.6rem);
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  width: 100%;
+}
+
+.md-sidebar--primary .md-sidebar__scrollwrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.md-sidebar--primary .md-sidebar__scrollwrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.md-sidebar--primary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+  background-color: #444;
+}
+
+/* Professional left navigation menu */
+.md-sidebar--primary .md-sidebar__inner {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.md-sidebar--primary .md-nav {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Hide the navigation title with logo */
+.md-sidebar--primary .md-nav__title {
+  display: none;
+}
+
+/* Hide the Home link in navigation (only the exact root path) */
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item:has(> a.md-nav__link[href$="/open-source-sei-platform/"]) {
+  display: none;
+}
+
+/* Top level navigation items (main sections) */
+.md-sidebar--primary .md-nav--primary > .md-nav__list {
+  margin: 0;
+  padding: 0;
+}
+
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item {
+  margin: 0;
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  display: block;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item {
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item:last-child {
+  border-bottom: none;
+}
+
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
+  font-weight: 600;
+  font-size: 0.693rem;
+  padding: 0.55rem 1rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666;
+  background-color: #f5f5f5;
+  display: block;
+  width: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
+  color: #999;
+  background-color: #252525;
+}
+
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:hover {
+  background-color: #eeeeee;
+  color: #333;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:hover {
+  background-color: #2a2a2a;
+  color: #ccc;
+}
+
+/* Nested items (sub-pages) */
+.md-sidebar--primary .md-nav__item--nested > .md-nav > .md-nav__list {
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  display: block;
+  width: 100%;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__item--nested > .md-nav > .md-nav__list {
+  background-color: #1a1a1a;
+}
+
+.md-sidebar--primary .md-nav__item--nested .md-nav__link {
+  font-size: 0.7392rem;
+  font-weight: 400;
+  padding: 0.45rem 1rem 0.45rem 1.75rem;
+  margin: 0;
+  border-left: 3px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+  color: #555;
+  display: block;
+  width: 100%;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__item--nested .md-nav__link {
+  color: #aaa;
+}
+
+.md-sidebar--primary .md-nav__item--nested .md-nav__link:hover {
+  background-color: #f8f8f8;
+  border-left-color: #3498DB;
+  color: #333;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__item--nested .md-nav__link:hover {
+  background-color: #242424;
+  color: #fff;
+}
+
+.md-sidebar--primary .md-nav__item--nested .md-nav__link--active {
+  color: #3498DB;
+  font-weight: 500;
+  background-color: #e8f4fd;
+  border-left-color: #3498DB;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--primary .md-nav__item--nested .md-nav__link--active {
+  color: #5dade2;
+  background-color: #1e3a52;
+  border-left-color: #5dade2;
+}
+
+/* Remove default padding and ensure proper display */
+.md-sidebar--primary .md-nav__item {
+  padding: 0;
+  margin: 0;
+  display: block;
+  width: 100%;
+}
+
+.md-sidebar--primary .md-nav__item .md-nav__item {
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide expand/collapse icons */
+.md-sidebar--primary .md-nav__icon {
+  display: none;
+}
+
+.md-sidebar--primary .md-nav__link--index {
+  position: relative;
+}
+
+/* Prevent text overflow in navigation links */
+.md-sidebar--primary .md-nav__link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Hide duplicate index links to prevent showing section name twice */
+.md-sidebar--primary .md-nav__item--nested .md-nav__link--index {
+  display: none;
+}
+
+/* But keep the top-level section headers visible */
+.md-sidebar--primary .md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
+  display: block;
+}
+
+/* Hide the anchor link when there's a label (for active pages with TOC toggle) */
+.md-sidebar--primary .md-nav__item--active > label.md-nav__link + a.md-nav__link {
+  display: none !important;
+}
+
+/* Also hide duplicate anchor in any navigation item that has both label and anchor */
+.md-sidebar--primary .md-nav__item > input.md-nav__toggle + label.md-nav__link + a.md-nav__link {
+  display: none !important;
+}
+
+/* Ensure the label is visible and styled properly */
+.md-sidebar--primary .md-nav__item--active > label.md-nav__link {
+  display: block;
+  cursor: pointer;
+}
+
+/* Ensure nested nav containers are stable */
+.md-sidebar--primary .md-nav__item--nested > .md-nav {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.md-sidebar--primary .md-nav__toggle:checked ~ .md-nav__list {
+  max-height: none;
+}
+
+.md-sidebar--primary .md-nav__list {
+  overflow: hidden;
+}
+
+/* Better visual separation */
+.md-sidebar--primary .md-nav--primary {
+  font-size: 0.7392rem;
+}
+
+/* Content area - professional, tight spacing */
+.md-content {
+  padding: 0;
+  max-width: none;
+  margin-left: var(--md-sidebar-width);
+  margin-right: var(--md-toc-width);
+  min-height: 100vh;
+}
+
+.md-content__inner {
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 0.5rem 1rem;
+}
+
+/* Adjust main container for sidebar layout */
+.md-main {
+  margin-top: 3.6rem;
+}
+
+.md-main__inner {
+  margin-top: 0;
+  min-height: calc(100vh - 3.6rem);
+}
+
+/* Right table of contents pane - sub menu for current page */
+.md-sidebar--secondary {
+  width: var(--md-toc-width);
+  right: 0;
+  position: fixed;
+  height: 100%;
+  top: 3.6rem;
+  padding-top: 0;
+  overflow: hidden;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: calc(100vh - 3.6rem);
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+  background-color: #444;
+}
+
+/* Style the table of contents title */
+.md-sidebar--secondary .md-nav__title {
+  font-weight: 600;
+  font-size: 0.693rem;
+  padding: 0.55rem 1rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__title {
+  color: #999;
+}
+
+/* Table of contents links - match left nav spacing */
+.md-sidebar--secondary .md-nav__link {
+  font-size: 0.7392rem;
+  font-weight: 400;
+  padding: 0.45rem 1rem 0.45rem 1rem;
+  margin: 0;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  color: #555;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link {
+  color: #aaa;
+}
+
+.md-sidebar--secondary .md-nav__link:hover {
+  border-left-color: #3498DB;
+  color: #333;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link:hover {
+  color: #fff;
+}
+
+.md-sidebar--secondary .md-nav__link--active {
+  border-left-color: #3498DB;
+  font-weight: 500;
+  color: #3498DB;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link--active {
+  color: #5dade2;
+  border-left-color: #5dade2;
+}
+
+/* Professional typography */
+.md-typeset {
+  font-size: 0.8316rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  font-size: 1.6632rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 0.3rem;
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  font-size: 1.2936rem;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+  font-size: 1.0626rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.3rem;
+}
+
+.md-typeset h4 {
+  font-weight: 600;
+  font-size: 0.924rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Tighter paragraph spacing */
+.md-typeset p {
+  margin-bottom: 0.5rem;
+}
+
+/* Code blocks - tighter */
+.md-typeset pre {
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.md-typeset code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  font-size: 0.79464em;
+}
+
+/* Tables - clean and tight */
+.md-typeset table:not([class]) {
+  font-size: 0.7854rem;
+  border-radius: 0;
+  overflow: hidden;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.md-typeset table:not([class]) th {
+  font-weight: 600;
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--md-default-fg-color);
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Clean navigation */
+.md-nav__item {
+  padding: 0;
+}
+
+.md-nav__link {
+  transition: all 0.15s ease;
+}
+
+/* Table of contents on right */
+.md-sidebar--secondary .md-nav__link {
+  font-size: 0.75768rem;
+  padding: 0.4rem 0.6rem;
+}
+
+/* Admonitions - minimal */
+.md-typeset .admonition {
+  border-radius: 0;
+  border-left-width: 3px;
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.6rem;
+}
+
+.md-typeset .admonition-title {
+  font-weight: 600;
+  font-size: 0.7854rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Search */
+.md-search__input {
+  font-family: 'Work Sans', sans-serif;
+  border-radius: 6px;
+}
+
+/* Hide footer and add bottom padding to content instead */
+.md-footer {
+  display: none;
+}
+
+.md-content__inner {
+  padding-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 76.1875em) {
+  .md-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .md-content__inner {
+    padding: 0 0.75rem;
+  }
+
+  .md-footer {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 60em) {
+  .md-sidebar--secondary {
+    display: none;
+  }
+
+  .md-content {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .md-content__inner {
+    padding: 0 0.5rem;
+  }
+
+  .md-footer {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Remove emoji if any slip through */
+img.emoji {
+  display: none !important;
+}
+
+/* Tighter list styling */
+.md-typeset ul {
+  margin: 0.4rem 0;
+}
+
+.md-typeset li {
+  margin: 0.15rem 0;
+}
+
+/* Better blockquote styling */
+.md-typeset blockquote {
+  border-left: 4px solid var(--md-primary-fg-color);
+  padding-left: 0.75rem;
+  margin: 0.5rem 0;
+  font-style: normal;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Improve horizontal rules */
+.md-typeset hr {
+  margin: 1rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-md-color-scheme="slate"] .md-typeset hr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mermaid diagrams */
+.md-typeset .mermaid {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.md-typeset .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
